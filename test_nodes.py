@@ -1,6 +1,6 @@
 import tempfile
 import pytest
-from nodes import Filescan, Selection, Projection
+from nodes import Filescan, Selection, Projection, Sort
 
 
 @pytest.fixture
@@ -46,4 +46,13 @@ def test_projection(csv):
         ("5",),
         ("8",),
         ("11",),
+    ]
+
+
+def test_sort(csv):
+    assert list(Sort("b", child=Filescan(csv.name))) == [
+        ("10", "11", "12"),
+        ("1", "2", "3"),
+        ("4", "5", "6"),
+        ("7", "8", "9"),
     ]

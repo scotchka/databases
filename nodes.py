@@ -40,7 +40,19 @@ class Selection(Node):
 
 class Projection(Node):
     def __iter__(self):
-        self.schema = dict(zip(self.args, range(len(self.args))))
+        columns = self.args
+        self.schema = dict(zip(columns, range(len(columns))))
 
         for row in self.child:
             yield tuple([row[self.child.schema[column]] for column in self.schema])
+
+
+class Sort(Node):
+    def __iter__(self):
+        (col,) = self.args
+
+        rows = list(self.child)
+        self.schema = self.child.schema
+        rows.sort(key=lambda r: r[self.schema[col]])
+        for row in rows:
+            yield row
